@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件辨識工具</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        .preview-image {
+            height: 300px;
+            width: auto;
+            object-fit: contain;
+        }
+        .preview-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <h1 class="mb-4">文件辨識工具</h1>
+        
+        <div class="mb-3">
+            <label class="form-label">選擇辨識語言：</label>
+            <select id="langSelect" class="form-select">
+                <option value="afr">Afrikaans</option>
+                <option value="amh">አማርኛ</option>
+                <option value="ara">العربية</option>
+                <option value="asm">অসমীয়া</option>
+                <option value="aze">Azərbaycan</option>
+                <option value="aze_cyrl">азәрбајҹан</option>
+                <option value="bel">беларуская</option>
+                <option value="ben">বাংলা</option>
+                <option value="bod">བོད་སྐད</option>
+                <option value="bos">Bosanski</option>
+                <option value="bre">Brezhoneg</option>
+                <option value="bul">български</option>
+                <option value="cat">Català</option>
+                <option value="ceb">Cebuano</option>
+                <option value="ces">Čeština</option>
+                <option value="chi_sim">简体中文</option>
+                <option value="chi_tra" selected>繁體中文</option>
+                <option value="chr">ᏣᎳᎩ</option>
+                <option value="cos">Corsu</option>
+                <option value="cym">Cymraeg</option>
+                <option value="dan">Dansk</option>
+                <option value="deu">Deutsch</option>
+                <option value="dzo">རྫོང་ཁ</option>
+                <option value="ell">Ελληνικά</option>
+                <option value="eng">English</option>
+                <option value="enm">Middle English</option>
+                <option value="epo">Esperanto</option>
+                <option value="est">Eesti</option>
+                <option value="eus">Euskara</option>
+                <option value="fao">Føroyskt</option>
+                <option value="fas">فارسی</option>
+                <option value="fil">Filipino</option>
+                <option value="fin">Suomi</option>
+                <option value="fra">Français</option>
+                <option value="frk">Frankish</option>
+                <option value="frm">Middle French</option>
+                <option value="fry">Frysk</option>
+                <option value="gla">Gàidhlig</option>
+                <option value="gle">Gaeilge</option>
+                <option value="glg">Galego</option>
+                <option value="grc">Ancient Greek</option>
+                <option value="guj">ગુજરાતી</option>
+                <option value="hat">Kreyòl ayisyen</option>
+                <option value="heb">עברית</option>
+                <option value="hin">हिन्दी</option>
+                <option value="hrv">Hrvatski</option>
+                <option value="hun">Magyar</option>
+                <option value="hye">Հայերեն</option>
+                <option value="iku">ᐃᓄᒃᑎᑐᑦ</option>
+                <option value="ind">Indonesia</option>
+                <option value="isl">Íslenska</option>
+                <option value="ita">Italiano</option>
+                <option value="ita_old">Old Italian</option>
+                <option value="jav">ꦧꦱꦗꦮ</option>
+                <option value="jpn">日本語</option>
+                <option value="kan">ಕನ್ನಡ</option>
+                <option value="kat">ქართული</option>
+                <option value="kat_old">Old Georgian</option>
+                <option value="kaz">қазақ тілі</option>
+                <option value="khm">ខ្មែរ</option>
+                <option value="kir">Кыргызча</option>
+                <option value="kor">한국어</option>
+                <option value="kur">Kurdî</option>
+                <option value="lao">ລາວ</option>
+                <option value="lat">Latin</option>
+                <option value="lav">Latviešu</option>
+                <option value="lit">Lietuvių</option>
+                <option value="ltz">Lëtzebuergesch</option>
+                <option value="mal">മലയാളം</option>
+                <option value="mar">मराठी</option>
+                <option value="mkd">Македонски</option>
+                <option value="mlt">Malti</option>
+                <option value="mon">Монгол</option>
+                <option value="mri">Māori</option>
+                <option value="msa">Melayu</option>
+                <option value="mya">မြန်မာ</option>
+                <option value="nep">नेपाली</option>
+                <option value="nld">Nederlands</option>
+                <option value="nor">Norsk</option>
+                <option value="oci">Occitan</option>
+                <option value="ori">ଓଡ଼ିଆ</option>
+                <option value="pan">ਪੰਜਾਬੀ</option>
+                <option value="pol">Polski</option>
+                <option value="por">Português</option>
+                <option value="pus">پښتو</option>
+                <option value="que">Runa Simi</option>
+                <option value="ron">Română</option>
+                <option value="rus">Русский</option>
+                <option value="san">संस्कृत</option>
+                <option value="sin">සිංහල</option>
+                <option value="slk">Slovenčina</option>
+                <option value="slv">Slovenščina</option>
+                <option value="snd">سنڌي</option>
+                <option value="spa">Español</option>
+                <option value="spa_old">Old Spanish</option>
+                <option value="sqi">Shqip</option>
+                <option value="srp">Српски</option>
+                <option value="srp_latn">Srpski</option>
+                <option value="sun">Basa Sunda</option>
+                <option value="swa">Kiswahili</option>
+                <option value="swe">Svenska</option>
+                <option value="syr">ܣܘܪܝܝܐ</option>
+                <option value="tam">தமிழ்</option>
+                <option value="tat">Татарча</option>
+                <option value="tel">తెలుగు</option>
+                <option value="tgk">Тоҷикӣ</option>
+                <option value="tgl">Tagalog</option>
+                <option value="tha">ไทย</option>
+                <option value="tir">ትግርኛ</option>
+                <option value="tur">Türkçe</option>
+                <option value="uig">ئۇيغۇرچە</option>
+                <option value="ukr">Українська</option>
+                <option value="urd">اردو</option>
+                <option value="uzb">O'zbek</option>
+                <option value="uzb_cyrl">Ўзбек</option>
+                <option value="vie">Tiếng Việt</option>
+                <option value="yid">ייִדיש</option>
+                <option value="yor">Yorùbá</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">範例檔案：</label>
+            <button class="btn btn-outline-primary me-2" onclick="loadExampleFile('10-pages.pdf')">10頁PDF</button>
+            <button class="btn btn-outline-primary" onclick="loadExampleFile('3rd-page.jpg')">圖片檔</button>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">選擇檔案 (圖片或PDF)：</label>
+            <input type="file" id="fileInput" class="form-control" accept="image/*,.pdf">
+        </div>
+
+        <div id="fileInfo" class="alert alert-info mb-3" style="display: none;"></div>
+
+        <div class="preview-container mb-3" id="previewContainer"></div>
+
+        <div class="mb-3">
+            <div class="row align-items-center">
+                <div class="col-6">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="pageRange" id="allPages" value="all" checked>
+                        <label class="form-check-label" for="allPages">全部頁面</label>
+                    </div>
+                </div>
+                <div class="col-6 d-flex align-items-center">
+                    <div class="form-check me-2">
+                        <input class="form-check-input" type="radio" name="pageRange" id="customRange" value="custom">
+                        <label class="form-check-label" for="customRange">部分頁面</label>
+                    </div>
+                    <input type="text" class="form-control" id="pageRangeInput" placeholder="例如: 1 或 1-10" style="max-width: 150px;">
+                </div>
+            </div>
+            <button id="processBtn" class="btn btn-primary" disabled>開始辨識</button>
+            <button id="downloadBtn" class="btn btn-success ms-2" style="display: none;">下載文字檔</button>
+        </div>
+
+        <div class="progress mb-3" style="display: none;">
+            <div id="progressBar" class="progress-bar" role="progressbar"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">辨識結果：</label>
+            <textarea id="resultText" class="form-control" rows="10" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        const elements = {
+            langSelect: document.getElementById('langSelect'),
+            fileInput: document.getElementById('fileInput'),
+            fileInfo: document.getElementById('fileInfo'),
+            previewContainer: document.getElementById('previewContainer'),
+            processBtn: document.getElementById('processBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            progressBar: document.getElementById('progressBar'),
+            resultText: document.getElementById('resultText'),
+            pageRangeInputs: document.getElementById('pageRangeInputs'),
+            startPage: document.getElementById('startPage'),
+            endPage: document.getElementById('endPage')
+        };
+
+        let currentFile = null;
+        let pdfPages = [];
+        let totalPages = 0;
+
+        document.querySelectorAll('input[name="pageRange"]').forEach(radio => {
+            radio.addEventListener('change', function(e) {
+                const rangeInput = document.getElementById('pageRangeInput');
+                rangeInput.disabled = e.target.value !== 'custom';
+            });
+        });
+
+        document.getElementById('pageRangeInput').disabled = true;
+
+        fileInput.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            resetUI();
+            currentFile = file;
+            
+            if (file.type === 'application/pdf') {
+                await handlePDFPreview(file);
+            } else {
+                handleImagePreview(file);
+            }
+        });
+
+        function resetUI() {
+            elements.processBtn.disabled = true;
+            elements.resultText.value = '';
+            elements.downloadBtn.style.display = 'none';
+            elements.fileInfo.style.display = 'none';
+            elements.previewContainer.innerHTML = '';
+            pdfPages = [];
+            totalPages = 0;
+        }
+
+        async function handlePDFPreview(file) {
+            const reader = new FileReader();
+            
+            reader.onloadstart = function() {
+                elements.fileInfo.textContent = 'PDF載入中 (0%)';
+                elements.fileInfo.style.display = 'block';
+            };
+            
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const progress = Math.round((e.loaded / e.total) * 100);
+                    elements.fileInfo.textContent = `PDF載入中 (${progress}%)`;
+                }
+            };
+            
+            const arrayBuffer = await new Promise((resolve, reject) => {
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = () => reject(reader.error);
+                reader.readAsArrayBuffer(file);
+            });
+            
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            totalPages = pdf.numPages;
+            const displayPages = Math.min(5, totalPages);
+
+            elements.fileInfo.textContent = `PDF 共 ${totalPages} 頁，顯示前 ${displayPages} 頁預覽`;
+            elements.fileInfo.style.display = 'block';
+            
+            for (let i = 1; i <= totalPages; i++) {
+                elements.fileInfo.textContent = `PDF 共 ${totalPages} 頁，顯示前 ${displayPages} 頁預覽。目前已經背景載入 ${i} 頁`;
+                const page = await pdf.getPage(i);
+                const viewport = page.getViewport({ scale: 1.0 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                canvas.classList.add('preview-image');
+
+                await page.render({
+                    canvasContext: context,
+                    viewport: viewport
+                }).promise;
+
+                pdfPages.push(canvas.toDataURL());
+                
+                if (i <= displayPages) {
+                    elements.previewContainer.appendChild(canvas);
+                }
+            }
+
+            elements.processBtn.disabled = false;
+        }
+
+        function handleImagePreview(file) {
+            totalPages = 1;
+            const img = document.createElement('img');
+            img.className = 'preview-image';
+            
+            const reader = new FileReader();
+            reader.onloadstart = function() {
+                elements.fileInfo.textContent = '載入中 (0%)';
+                elements.fileInfo.style.display = 'block';
+            };
+            
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    const progress = Math.round((e.loaded / e.total) * 100);
+                    elements.fileInfo.textContent = `載入中 (${progress}%)`;
+                }
+            };
+            
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                elements.previewContainer.appendChild(img);
+                elements.processBtn.disabled = false;
+                elements.fileInfo.textContent = '已載入圖片檔案';
+            }
+            reader.readAsDataURL(file);
+        }
+
+        async function processImage(imageData) {
+            let startTime;
+            const worker = await Tesseract.createWorker({
+                logger: m => {
+                    if (m.status === 'recognizing text') {
+                        if (!startTime) {
+                            startTime = Date.now();
+                        }
+                        const progressPerPage = m.progress / pagesToProcess;
+                        const overallProgress = ((currentPageIndex - 1 + progressPerPage) / pagesToProcess) * 100;
+                        
+                        elements.progressBar.style.width = `${overallProgress}%`;
+                        elements.progressBar.textContent = `${Math.round(overallProgress)}%`;
+                    }
+                }
+            });
+
+            await worker.loadLanguage(elements.langSelect.value);
+            await worker.initialize(elements.langSelect.value);
+            const result = await worker.recognize(imageData);
+            await worker.terminate();
+            return result.data.text;
+        }
+
+        async function startOCR() {
+            elements.progressBar.parentElement.style.display = 'block';
+            elements.processBtn.disabled = true;
+            elements.resultText.value = '';
+            elements.downloadBtn.style.display = 'none';
+
+            const isCustomRange = document.getElementById('customRange').checked;
+            let startPageNum = 1;
+            let endPageNum = totalPages;
+
+            if (document.querySelector('input[name="pageRange"]:checked').value === 'custom') {
+                const rangeInput = document.getElementById('pageRangeInput').value.trim();
+                if (rangeInput) {
+                    if (rangeInput.includes('-')) {
+                        const [start, end] = rangeInput.split('-').map(num => parseInt(num));
+                        if (!isNaN(start) && !isNaN(end) && start <= end && start >= 1 && end <= totalPages) {
+                            startPageNum = start;
+                            endPageNum = end;
+                        } else {
+                            alert('請輸入有效的頁數範圍');
+                            return;
+                        }
+                    } else {
+                        const page = parseInt(rangeInput);
+                        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                            startPageNum = endPageNum = page;
+                        } else {
+                            alert('請輸入有效的頁數');
+                            return;
+                        }
+                    }
+                }
+            }
+
+            window.pagesToProcess = endPageNum - startPageNum + 1;
+            window.currentPageIndex = 1;
+
+            try {
+                let text = '';
+                if (currentFile.type === 'application/pdf') {
+                    for (let i = startPageNum - 1; i < endPageNum; i++) {
+                        window.currentPageIndex = i - startPageNum + 2;
+                        const pageText = await processImage(pdfPages[i]);
+                        text += `=== 第 ${i + 1} 頁 ===\n${pageText}\n\n`;
+                    }
+                } else {
+                    text = await processImage(currentFile);
+                }
+
+                elements.resultText.value = text;
+                elements.downloadBtn.style.display = 'inline-block';
+            } catch (error) {
+                console.error('處理錯誤:', error);
+                alert('處理檔案時發生錯誤，請稍後再試。');
+            } finally {
+                elements.processBtn.disabled = false;
+                elements.progressBar.parentElement.style.display = 'none';
+            }
+        }
+
+        elements.processBtn.addEventListener('click', startOCR);
+
+        elements.downloadBtn.addEventListener('click', function() {
+            const text = elements.resultText.value;
+            if (!text) return;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'recognized-text.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        async function loadExampleFile(filename) {
+            try {
+                const response = await fetch(`example_files/${filename}`);
+                const blob = await response.blob();
+                const file = new File([blob], filename, { type: filename.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg' });
+                
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            } catch (error) {
+                console.error('載入範例檔案失敗:', error);
+                alert('載入範例檔案失敗，請稍後再試。');
+            }
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
