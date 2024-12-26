@@ -277,7 +277,7 @@
             elements.fileInfo.style.display = 'block';
             
             for (let i = 1; i <= totalPages; i++) {
-                elements.fileInfo.textContent = `PDF 共 ${totalPages} 頁，顯示前 ${displayPages} 頁預覽。目前已經背景載入 ${i} 頁`;
+                elements.fileInfo.textContent = `PDF 共 ${totalPages} 頁，顯示前 ${displayPages} 頁預覽。目前已經背景載入 ${i} 頁。載入完成才能開始辨識文字。`;
                 const page = await pdf.getPage(i);
                 const viewport = page.getViewport({ scale: 1.0 });
                 const canvas = document.createElement('canvas');
